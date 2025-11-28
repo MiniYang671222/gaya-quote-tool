@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THE GAYA HOTEL 2026上半年 自動報價小工具</title>
+    <style>
+        /* --- 變數定義 --- */
+        :root {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --card-bg: #252525;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-color: #6200ea;
+            --accent-hover: #7c43bd;
+            --border-color: #444;
+            --success-color: #00c853;
+            --delete-color: #ff5252;
+            --delete-bg: rgba(255, 82, 82, 0.1);
+        }
+
+        /* --- 基礎設定 --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 10px; /* 手機版減少外距 */
+            min-height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: var(--bg-secondary);
+            padding: 20px 15px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 600px; /* 平板寬度上限 */
+            margin-bottom: 50px; /* 預留底部空間 */
+        }
+
+        h2 {
+            text-align: center;
+            margin: 10px 0 25px 0;
+            color: var(--text-primary);
+            font-weight: 800;
+            font-size: 1.5rem;
+            line-height: 1.4;
+        }
+
+        /* --- 表單元件通用 --- */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        /* 加大輸入框高度與字體，防止 iOS 縮放 */
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            box-sizing: border-box;
+            font-size: 16px; /* 關鍵：16px 防止 iOS input zoom */
+            transition: all 0.2s;
+            appearance: none; /* 移除原生樣式 */
+            -webkit-appearance: none;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(98, 0, 234, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        /* --- 房型卡片設計 (Mobile Card Style) --- */
+        #roomSelectionContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .room-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .room-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .room-number-badge {
+            background-color: var(--accent-color);
+            color: white;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .room-card-row {
+            margin-bottom: 12px;
+        }
+
+        /* 刪除按鈕改為寬版且醒目 */
+        .btn-delete-card {
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            color: var(--delete-color);
+            border: 1px solid var(--delete-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .btn-delete-card:active {
+            background-color: var(--delete-bg);
+        }
+
+        /* --- 按鈕樣式 --- */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-add-room {
+            background-color: transparent;
+            border: 2px dashed var(--border-color);
+            color: var(--text-primary);
+            margin-top: 15px;
+            padding: 14px;
+        }
+        .btn-add-room:active {
+            background-color: rgba(255,255,255,0.05);
+            border-color: var(--text-secondary);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(98, 0, 234, 0.4);
+            position: sticky;
+            bottom: 20px; /* 讓計算按鈕稍微浮動，方便點擊 */
+            z-index: 100;
+        }
+
+        .btn-copy {
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            margin-top: 15px;
+        }
+
+        .btn-copy.success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        /* --- 加購晚餐區塊 --- */
+        .checkbox-wrapper {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 客製化 Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #555;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        #dinnerOptions {
+            background-color: var(--bg-primary);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        /* --- 輸出結果區 --- */
+        #outputArea {
+            height: 300px;
+            font-family: monospace;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .hidden { display: none; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>THE GAYA HOTEL<br><span style="font-size: 1rem; color: var(--accent-color);">2026上半年 自動報價</span></h2>
+    
+    <div class="form-group">
+        <label for="date">📅 入住日期</label>
+        <input type="date" id="date" min="2026-01-01" max="2026-06-30" value="2026-01-01">
+        <div class="note">適用日期: 2026/01/01 - 06/30</div>
+    </div>
+
+    <div class="form-group">
+        <label>🏨 房型選擇</label>
+        <div id="roomSelectionContainer">
+            </div>
+        <button class="btn btn-add-room" onclick="addRoomSelection()">＋ 新增一間房型</button>
+    </div>
+
+    <div class="form-group">
+        <div class="checkbox-wrapper">
+            <span style="font-weight: bold; font-size: 1rem;">🍽️ 加購晚餐</span>
+            <label class="switch">
+                <input type="checkbox" id="includeDinner" onchange="toggleDinnerOptions()">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div id="dinnerOptions">
+            <label for="dinnerType">選擇方案 (每房再折 $300):</label>
+            <select id="dinnerType">
+                <option value="800">$800 /人 (自助餐)</option>
+                <option value="1000">$1000 /人 (精緻餐)</option>
+            </select>
+            <div class="note">* 人數依房型標準入住人數計算</div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="calculateQuote()">📝 計算總報價</button>
+
+    <div class="form-group" style="margin-top: 30px;">
+        <label for="outputArea">📊 報價結果</label>
+        <textarea id="outputArea" readonly placeholder="結果將顯示於此..."></textarea>
+        
+        <div id="copyBtnContainer" class="hidden">
+            <button class="btn btn-copy" id="copyBtn" onclick="copyToClipboard()">📋 一鍵複製文字</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 資料定義 (包含 1/1 特殊假日邏輯) ---
+    const roomData = {
+        "雅緻客房(一大床)": { capacity: 2, limit: 40, weekday: 4100, holiday: 5400, continuous: 6200 },
+        "雅緻客房(二小床)": { capacity: 2, limit: 40, weekday: 4100, holiday: 5400, continuous: 6200 },
+        "雅致三小床": { capacity: 3, limit: 8, weekday: 5300, holiday: 6600, continuous: 7400 },
+        "精彩家庭房": { capacity: 4, limit: 26, weekday: 5900, holiday: 7200, continuous: 8000 },
+        "豪華家庭房": { capacity: 4, limit: 6, weekday: 6900, holiday: 8200, continuous: 9000 },
+        "景觀豪華家庭房": { capacity: 4, limit: 8, weekday: 7900, holiday: 9200, continuous: 10000 },
+        "行政套房": { capacity: 2, limit: 5, weekday: 14000, holiday: 16500, continuous: 18500 },
+        "人文套房": { capacity: 2, limit: 1, weekday: 16500, holiday: 18500, continuous: 20500 },
+        "人文大套房": { capacity: 2, limit: 1, weekday: 18500, holiday: 20500, continuous: 22500 }
+    };
+
+    const config = {
+        minDate: "2026-01-01",
+        maxDate: "2026-06-30",
+        cny: ["2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20"],
+        // 包含 1/1 的連續假日設定
+        continuous: [
+            "2026-01-01", 
+            "2026-02-27", "2026-02-28", "2026-04-03", "2026-04-04", "2026-04-05", 
+            "2026-05-01", "2026-05-02", "2026-06-19", "2026-06-20"
+        ],
+        exceptions: ["2026-04-24", "2026-04-25"],
+        dinnerDiscountPerRoom: 300,
+        weekdayExtraDiscount: 200
+    };
+
+    function getDateType(dateString) {
+        if (config.exceptions.includes(dateString) || config.cny.includes(dateString)) return "exception";
+        if (config.continuous.includes(dateString)) return "continuous";
+        const date = new Date(dateString);
+        const dayOfWeek = date.getDay();
+        if (dayOfWeek === 6) return "holiday";
+        if (dayOfWeek >= 1 && dayOfWeek <= 4) return "weekday_extra_discount";
+        return "weekday";
+    }
+
+    function toggleDinnerOptions() {
+        const isChecked = document.getElementById('includeDinner').checked;
+        document.getElementById('dinnerOptions').style.display = isChecked ? 'block' : 'none';
+    }
+
+    // --- 優化後的卡片新增功能 ---
+    function addRoomSelection() {
+        const container = document.getElementById('roomSelectionContainer');
+        const index = container.children.length + 1;
+        
+        const roomEntryDiv = document.createElement('div');
+        roomEntryDiv.className = 'room-card';
+
+        const roomOptions = Object.keys(roomData).map(roomName => 
+            `<option value="${roomName}">${roomName} (${roomData[roomName].capacity}人)</option>`
+        ).join('');
+        
+        // 改為直覺的卡片式 HTML 結構
+        const roomSelectHtml = `
+            <div class="room-card-header">
+                <span class="room-number-badge">房型 #${index}</span>
+            </div>
+            
+            <div class="room-card-row">
+                <label>選擇房型</label>
+                <select class="room-type-select">
+                    ${roomOptions}
+                </select>
+            </div>
+            
+            <div class="room-card-row">
+                <label>間數 (上限參考)</label>
+                <input type="number" class="room-quantity-input" min="1" value="1" inputmode="numeric">
+            </div>
+
+            <button type="button" class="btn btn-delete-card" onclick="removeRoomSelection(this)">
+                🗑️ 刪除此房型
+            </button>
+        `;
+        roomEntryDiv.innerHTML = roomSelectHtml;
+        container.appendChild(roomEntryDiv);
+    }
+
+    function removeRoomSelection(button) {
+        button.closest('.room-card').remove();
+        // 重新編號 (可選)
+        updateRoomBadges();
+    }
+
+    function updateRoomBadges() {
+        const badges = document.querySelectorAll('.room-number-badge');
+        badges.forEach((badge, index) => {
+            badge.innerText = `房型 #${index + 1}`;
+        });
+    }
+
+    function calculateQuote() {
+        const dateInput = document.getElementById('date').value;
+        const roomEntries = document.querySelectorAll('.room-card');
+        const includeDinner = document.getElementById('includeDinner').checked;
+        const dinnerType = includeDinner ? parseInt(document.getElementById('dinnerType').value) : 0;
+        const outputArea = document.getElementById('outputArea');
+        const copyBtnContainer = document.getElementById('copyBtnContainer');
+
+        if (!dateInput) { alert("請選擇日期。"); return; }
+        if (dateInput < config.minDate || dateInput > config.maxDate) {
+             alert(`報價有效期限僅限 ${config.minDate} 至 ${config.maxDate}。`);
+             return;
+        }
+        if (roomEntries.length === 0) { alert("請至少新增一個房型。"); return; }
+
+        const dateType = getDateType(dateInput);
+        let requestedQuantities = {};
+
+        // 收集數據
+        try {
+            roomEntries.forEach((entry, index) => {
+                const roomType = entry.querySelector('.room-type-select').value;
+                const quantity = parseInt(entry.querySelector('.room-quantity-input').value);
+
+                if (isNaN(quantity) || quantity < 1) {
+                    throw new Error(`第 ${index + 1} 個房型的間數無效。`);
+                }
+                requestedQuantities[roomType] = (requestedQuantities[roomType] || 0) + quantity;
+            });
+        } catch (e) {
+            alert(e.message); return;
+        }
+
+        // 檢查上限
+        for (const type in requestedQuantities) {
+            if (requestedQuantities[type] > roomData[type].limit) {
+                alert(`${type} 要求的總間數 (${requestedQuantities[type]} 間) 已超過飯店上限 (${roomData[type].limit} 間)。`);
+                return;
+            }
+        }
+        
+        // 開始計算
+        let resultText = "";
+        let totalRoomPriceAfterDiscount = 0;
+        let totalDinnerGuests = 0;
+        let totalDinnerCost = 0;
+        let totalAllDiscount = 0;
+        
+        if (dateType === "exception") {
+            resultText = `*** 報價無法產生 ***\n\n所選日期為特殊除外日，不適用此報價表。`;
+        } else {
+            let dateTypeName;
+            if (dateType === "weekday_extra_discount") { dateTypeName = "平日(週一至週四)"; } 
+            else if (dateType === "weekday") { dateTypeName = "平日(週日/週五)"; } 
+            else if (dateType === "holiday") { dateTypeName = "假日(週六)"; } 
+            else { dateTypeName = "連續假日"; }
+
+            resultText = `【THE GAYA HOTEL 報價單】\n-------------------------\n`;
+            resultText += `日期: ${dateInput} (${dateTypeName})\n-------------------------\n`;
+
+            roomEntries.forEach((entry, index) => {
+                const roomType = entry.querySelector('.room-type-select').value;
+                const quantity = parseInt(entry.querySelector('.room-quantity-input').value);
+                const roomDataEntry = roomData[roomType];
+
+                let roomBasePrice = roomDataEntry[dateType.startsWith('weekday') ? 'weekday' : dateType]; 
+                let roomDiscountTotal = 0;
+                let roomDiscountDetails = [];
+
+                if (dateType === "weekday_extra_discount") {
+                    roomDiscountTotal += config.weekdayExtraDiscount;
+                    roomDiscountDetails.push(`周一~四優惠 -$${config.weekdayExtraDiscount}`);
+                }
+                if (includeDinner) {
+                    roomDiscountTotal += config.dinnerDiscountPerRoom;
+                    roomDiscountDetails.push(`晚餐優惠 -$${config.dinnerDiscountPerRoom}`);
+                }
+
+                let unitPriceAfterDiscount = roomBasePrice - roomDiscountTotal;
+                let roomPriceTotal = unitPriceAfterDiscount * quantity;
+
+                let roomDinnerCapacity = roomDataEntry.capacity;
+                let roomDinnerGuestTotal = roomDinnerCapacity * quantity;
+                let roomDinnerCostTotal = (dinnerType * roomDinnerGuestTotal);
+                
+                totalRoomPriceAfterDiscount += roomPriceTotal;
+                totalDinnerGuests += roomDinnerGuestTotal;
+                totalAllDiscount += roomDiscountTotal * quantity;
+                totalDinnerCost += roomDinnerCostTotal;
+
+                resultText += `[房型${index + 1}] ${roomType}\n`;
+                resultText += `  數量: ${quantity}間 (${roomDinnerCapacity}人/間)\n`;
+                resultText += `  單價: $${roomBasePrice.toLocaleString()}\n`;
+                if (roomDiscountDetails.length > 0) {
+                    resultText += `  折扣: ${roomDiscountDetails.join(', ')}\n`;
+                }
+                if (includeDinner) {
+                    resultText += `  晚餐: +$${roomDinnerCostTotal.toLocaleString()} (${roomDinnerGuestTotal}人)\n`;
+                }
+                const subTotal = roomPriceTotal + (includeDinner ? roomDinnerCostTotal : 0);
+                resultText += `  小計: $${subTotal.toLocaleString()}\n\n`;
+            });
+
+            let finalTotalPrice = totalRoomPriceAfterDiscount + (includeDinner ? totalDinnerCost : 0);
+
+            resultText += `-------------------------\n`;
+            resultText += `總房價: $${totalRoomPriceAfterDiscount.toLocaleString()}\n`;
+            if (includeDinner) {
+                resultText += `總餐費: $${totalDinnerCost.toLocaleString()}\n`;
+            }
+            resultText += `\n**總金額: NT$${finalTotalPrice.toLocaleString()}**\n`;
+            resultText += `-------------------------\n`;
+            resultText += `含稅及服務費。有效期至 2026/06/30。`;
+        }
+
+        outputArea.value = resultText;
+        copyBtnContainer.classList.remove('hidden');
+        
+        // 自動捲動到結果區
+        outputArea.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyToClipboard() {
+        const outputArea = document.getElementById('outputArea');
+        const copyBtn = document.getElementById('copyBtn');
+        outputArea.select();
+        outputArea.setSelectionRange(0, 99999); // Mobile fix
+
+        navigator.clipboard.writeText(outputArea.value).then(() => {
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = "✅ 複製成功";
+            copyBtn.classList.add('success');
+            setTimeout(() => {
+                copyBtn.innerText = originalText;
+                copyBtn.classList.remove('success');
+            }, 2000);
+        }).catch(err => {
+            alert("複製失敗，請手動選取文字複製。");
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        toggleDinnerOptions();
+        addRoomSelection();
+    });
+</script>
+
+</body>
+</html>
