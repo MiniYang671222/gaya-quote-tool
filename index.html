@@ -3,83 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎄 THE GAYA HOTEL 2026 自動報價 (聖誕限定版) 🦌</title>
+    <title>THE GAYA HOTEL 2026上半年 自動報價小工具 (積木版)</title>
     <style>
-        /* --- 聖誕主題變數定義 --- */
+        /* --- 變數定義 (積木配色) --- */
         :root {
-            --bg-primary: #004d40; /* 聖誕深綠 (夜空) */
-            --bg-secondary: rgba(0, 56, 48, 0.9); /* 容器背景 (半透明) */
-            --card-bg: rgba(27, 94, 32, 0.9); /* 卡片背景 (半透明) */
-            --text-primary: #fff8e1; /* 雪色/奶油白 */
-            --text-secondary: #c5e1a5; /* 淺綠色 */
-            --accent-color: #e53935; /* 聖誕紅 */
-            --accent-hover: #b71c1c;
-            --border-color: #43a047;
-            --success-color: #ffb300; /* 聖誕金色 */
-            --delete-color: #ffebee;
-            --delete-bg: rgba(255, 255, 255, 0.2);
+            --block-red: #FF1744;
+            --block-red-dark: #D50000;
+            --block-blue: #2979FF;
+            --block-blue-dark: #2962FF;
+            --block-yellow: #FFC400;
+            --block-yellow-dark: #FFAB00;
+            
+            --bg-color: #f4f5f7;
+            --card-bg: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
         }
 
-        /* --- 基礎設定 & 穩定背景 --- */
+        /* --- 基礎設定 & 積木背景 --- */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
-            background-color: var(--bg-primary); /* 背景顏色固定為深綠色 */
+            font-family: 'Varela Round', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: var(--text-primary);
             margin: 0;
-            padding: 10px;
+            padding: 20px 10px;
             min-height: 100vh;
             box-sizing: border-box;
             display: flex;
             justify-content: center;
-            overflow-x: hidden;
-            position: relative; 
-            
-            /* 聖誕夜景元素 (靜態剪影 - 移除飄雪，確保 100% 穩定) */
-            background-image:
-                /* 聖誕樹 (左下) - 簡單綠色三角形 */
-                linear-gradient(to top right, transparent 50%, #1b5e20 50%) 10% 100%,
-                /* 聖誕樹 (右下) - 簡單綠色三角形 */
-                linear-gradient(to top left, transparent 50%, #1b5e20 50%) 90% 100%,
-                /* 月亮/光暈 - 白色圓點 */
-                radial-gradient(circle at 80% 5%, rgba(255,255,255,0.9) 8px, transparent 8px),
-                /* 雪橇剪影 (抽象點) - 聖誕紅 */
-                radial-gradient(circle at 82% 10%, var(--accent-color) 4px, transparent 0%), 
-                /* 雪橇剪影 (抽象點) - 黑色雪橇主體 */
-                radial-gradient(circle at 85% 12%, rgba(0,0,0,0.6) 8px, transparent 0%); 
-                
-            background-repeat: no-repeat;
-            background-size: 80px 80px, 60px 60px, 100% 100%, 100% 100%, 100% 100%;
-            background-position: 10% bottom, 90% bottom, 0 0, 0 0, 0 0;
+            /* 積木風格背景圖案 */
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(var(--block-blue) 15%, transparent 16%),
+                radial-gradient(var(--block-red) 15%, transparent 16%),
+                radial-gradient(var(--block-yellow) 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px, 15px 15px; /* 錯位排列 */
         }
-        
-        /* *** 移除 body::before 和所有 @keyframes 飄雪動畫 *** */
-        
+
         .container {
-            background-color: var(--bg-secondary);
-            padding: 20px 15px;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.8);
+            background-color: var(--card-bg);
+            padding: 25px 20px;
+            border-radius: 20px;
+            /* 像是浮在積木上的厚卡片 */
+            box-shadow: 0 10px 0 rgba(0,0,0,0.1), 0 20px 40px rgba(0,0,0,0.15);
+            border: 4px solid #fff;
             width: 100%;
             max-width: 600px;
             margin-bottom: 50px;
-            border: 2px solid var(--success-color);
-            z-index: 10; 
+            position: relative;
         }
 
         h2 {
             text-align: center;
-            margin: 10px 0 25px 0;
+            margin: 10px 0 30px 0;
             color: var(--text-primary);
             font-weight: 900;
-            font-size: 1.6rem;
-            text-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-hover);
+            font-size: 1.8rem;
+            line-height: 1.4;
+            letter-spacing: 1px;
         }
 
-        /* --- 表單元件通用 --- */
+        .title-accent {
+            display: inline-block;
+            background-color: var(--block-blue);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 10px;
+            transform: rotate(-2deg);
+            margin-top: 5px;
+            font-size: 1.2rem;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+        }
+
+        /* --- 表單元件 --- */
         label {
             display: block;
             margin-bottom: 8px;
-            color: var(--text-secondary);
+            color: var(--text-primary);
             font-size: 1rem;
             font-weight: 700;
         }
@@ -91,243 +92,244 @@
             width: 100%;
             padding: 14px;
             border-radius: 12px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-primary);
+            border: 3px solid #eee; /* 粗框 */
+            background-color: #fafafa;
             color: var(--text-primary);
             box-sizing: border-box;
             font-size: 16px;
             transition: all 0.2s;
             appearance: none;
             -webkit-appearance: none;
+            font-weight: 600;
         }
 
         input:focus, select:focus {
             outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.4);
+            border-color: var(--block-blue);
+            background-color: #fff;
         }
 
-        .form-group {
-            margin-bottom: 25px;
-        }
+        .form-group { margin-bottom: 25px; }
+        .note { font-size: 0.85rem; color: #888; margin-top: 8px; font-weight: 500;}
 
-        .note {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            opacity: 0.9;
-        }
-
-        /* --- 房型卡片設計 (聖誕風格) --- */
-        #roomSelectionContainer {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .room-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            padding: 18px;
-            position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .room-number-badge {
-            background-color: var(--accent-color);
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-
-        /* 刪除按鈕 */
-        .btn-delete-card {
-            width: 100%;
-            padding: 10px;
-            background-color: #3e2723;
-            color: var(--delete-color);
-            border: 1px solid var(--delete-color);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-        
-        .btn-delete-card:active {
-            background-color: #5d4037;
-        }
-
-        /* --- 按鈕樣式 --- */
+        /* --- 積木按鈕通用樣式 --- */
         .btn {
             width: 100%;
-            padding: 18px;
+            padding: 16px;
             border: none;
             border-radius: 12px;
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 900; /* 加粗字體 */
             cursor: pointer;
-            transition: transform 0.1s, background-color 0.2s;
+            transition: all 0.1s;
             display: flex;
             justify-content: center;
             align-items: center;
+            text-transform: uppercase;
+            position: relative;
+            top: 0;
         }
 
+        /* 按下按鈕的積木壓縮效果 */
         .btn:active {
-            transform: scale(0.97);
+            top: 4px;
+            box-shadow: 0 0 0 rgba(0,0,0,0) !important;
         }
 
-        .btn-add-room {
-            background-color: transparent;
-            border: 2px dashed var(--success-color);
-            color: var(--success-color);
-            margin-top: 15px;
-            padding: 16px;
-        }
-        .btn-add-room:active {
-            background-color: rgba(255, 179, 0, 0.1);
-            border-color: var(--success-color);
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
+        /* 藍色積木按鈕 (新增) */
+        .btn-blue {
+            background-color: var(--block-blue);
             color: white;
-            box-shadow: 0 6px 20px rgba(229, 57, 53, 0.6);
+            box-shadow: 0 5px 0 var(--block-blue-dark);
+        }
+
+        /* 黃色積木按鈕 (計算 - 最顯眼) */
+        .btn-yellow {
+            background-color: var(--block-yellow);
+            color: #4a3b00; /* 深色字對比高 */
+            box-shadow: 0 5px 0 var(--block-yellow-dark);
             position: sticky;
             bottom: 20px;
             z-index: 100;
         }
 
-        .btn-copy {
-            background-color: #ffb300;
-            color: #3e2723;
-            border: 1px solid #ffb300;
-            margin-top: 15px;
-            font-weight: 800;
-        }
-
-        .btn-copy.success {
-            background-color: #388e3c;
+        /* 紅色積木按鈕 (刪除/操作) */
+        .btn-red {
+            background-color: var(--block-red);
             color: white;
-            border-color: #388e3c;
+            box-shadow: 0 5px 0 var(--block-red-dark);
         }
         
-        /* --- 加購晚餐區塊 --- */
+        /* 綠色積木按鈕 (複製成功) */
+        .btn-green {
+            background-color: #00C853;
+            color: white;
+            box-shadow: 0 5px 0 #009624;
+        }
+
+        /* --- 房型卡片 (Card Style) --- */
+        #roomSelectionContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .room-card {
+            background-color: #fff;
+            border: 3px solid #eee;
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 彈跳動畫 */
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .room-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        /* 房號標籤 (動態顏色) */
+        .room-number-badge {
+            color: white;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+            display: inline-block;
+            transform: rotate(-2deg);
+        }
+        
+        .badge-red { background-color: var(--block-red); }
+        .badge-blue { background-color: var(--block-blue); }
+        .badge-yellow { background-color: var(--block-yellow); color: #4a3b00; }
+
+        .room-card-row { margin-bottom: 15px; }
+
+        /* 卡片內的刪除按鈕 */
+        .btn-delete-card {
+            width: 100%;
+            padding: 10px;
+            background-color: white;
+            color: var(--block-red);
+            border: 2px solid var(--block-red);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            box-shadow: 0 3px 0 rgba(255, 23, 68, 0.2);
+            transition: all 0.1s;
+            cursor: pointer;
+        }
+        .btn-delete-card:active {
+            transform: translateY(2px);
+            box-shadow: none;
+            background-color: #fff0f0;
+        }
+
+        /* --- 開關 (Switch) 設計成滑塊積木 --- */
         .checkbox-wrapper {
-            background-color: var(--bg-primary);
+            background-color: #f9f9f9;
             padding: 15px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 10px;
-            border: 1px solid var(--success-color);
+            border: 2px solid #eee;
         }
 
-        /* 客製化 Toggle Switch (聖誕配色) */
         .switch {
             position: relative;
             display: inline-block;
-            width: 60px;
-            height: 34px;
+            width: 56px;
+            height: 30px;
         }
-
-        .switch input { 
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
+        .switch input { opacity: 0; width: 0; height: 0; }
+        
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #795548;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
             transition: .4s;
             border-radius: 34px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
         }
-
         .slider:before {
             position: absolute;
             content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
+            height: 24px;
+            width: 24px;
+            left: 3px;
+            bottom: 3px;
             background-color: white;
             transition: .4s;
             border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-
         input:checked + .slider {
-            background-color: var(--accent-color);
+            background-color: var(--block-red); /* 開啟變成紅色積木 */
         }
-
         input:checked + .slider:before {
             transform: translateX(26px);
         }
 
         #dinnerOptions {
-            background-color: var(--bg-secondary);
+            background-color: #fff3e0; /* 淡淡的橘黃色背景 */
             padding: 15px;
             border-radius: 12px;
             margin-top: 10px;
-            border: 1px solid var(--border-color);
+            border: 2px dashed var(--block-yellow-dark);
             display: none;
         }
-        
+
         /* --- 輸出結果區 --- */
         #outputArea {
             height: 300px;
-            font-family: monospace;
+            font-family: 'Courier New', monospace; /* 打字機風格 */
             line-height: 1.5;
             white-space: pre-wrap;
-            background-color: #00251a;
-            color: #c5e1a5;
+            background-color: #333; /* 這裡保持深色讓文字對比清晰 */
+            color: #f0f0f0;
+            border: 4px solid #333;
         }
 
         .hidden { display: none; }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>
-        <span style="color: var(--accent-color);">🦌</span> THE GAYA HOTEL <span style="color: var(--accent-color);">🎅</span>
-        <br><span style="font-size: 1rem; color: var(--success-color);">2026上半年度 同業報價試算表</span>
+    <h2>THE GAYA HOTEL<br>
+        <span class="title-accent">2026上半年 自動報價</span>
     </h2>
     
     <div class="form-group">
-        <label for="date">🌟 入住日期</label>
+        <label for="date">📅 選擇入住日期</label>
         <input type="date" id="date" min="2026-01-01" max="2026-06-30" value="2026-01-01">
-        <div class="note">適用日期: 2026/01/01 - 06/30 (連續假日除外)</div>
+        <div class="note">適用日期: 2026/01/01 - 06/30</div>
     </div>
 
     <div class="form-group">
-        <label>🎄 房型選擇</label>
+        <label>🏨 房型選擇</label>
         <div id="roomSelectionContainer">
             </div>
-        <button class="btn btn-add-room" onclick="addRoomSelection()">🎁 新增房型選項</button>
+        <button class="btn btn-blue" style="margin-top: 20px;" onclick="addRoomSelection()">
+            ✚ 加入其他房型
+        </button>
     </div>
 
     <div class="form-group">
         <div class="checkbox-wrapper">
-            <span style="font-weight: bold; font-size: 1rem;">🍽️ 加購晚餐優惠方案</span>
+            <span style="font-weight: bold; font-size: 1rem; color: var(--block-red);">🍽️ 加購晚餐</span>
             <label class="switch">
                 <input type="checkbox" id="includeDinner" onchange="toggleDinnerOptions()">
                 <span class="slider"></span>
@@ -344,20 +346,24 @@
         </div>
     </div>
 
-    <button class="btn btn-primary" onclick="calculateQuote()">💰 計算總報價</button>
+    <button class="btn btn-yellow" onclick="calculateQuote()">
+        🧱 開始計算總報價 🧱
+    </button>
 
     <div class="form-group" style="margin-top: 30px;">
-        <label for="outputArea">🔔 報價結果</label>
-        <textarea id="outputArea" readonly placeholder="結果將顯示於此..."></textarea>
+        <label for="outputArea">📊 報價結果</label>
+        <textarea id="outputArea" readonly placeholder="請點選計算總報價..."></textarea>
         
-        <div id="copyBtnContainer" class="hidden">
-            <button class="btn btn-copy" id="copyBtn" onclick="copyToClipboard()">🌟 一鍵複製文字</button>
+        <div id="copyBtnContainer" class="hidden" style="margin-top: 15px;">
+            <button class="btn btn-red" id="copyBtn" onclick="copyToClipboard()">
+                📋 一鍵複製文字
+            </button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- 資料定義 (您的原始數據，未修改) ---
+    // --- 資料定義 ---
     const roomData = {
         "雅緻客房(一大床)": { capacity: 2, limit: 40, weekday: 4100, holiday: 5400, continuous: 6200 },
         "雅緻客房(二小床)": { capacity: 2, limit: 40, weekday: 4100, holiday: 5400, continuous: 6200 },
@@ -399,21 +405,25 @@
         document.getElementById('dinnerOptions').style.display = isChecked ? 'block' : 'none';
     }
 
-    // --- 房型新增/移除邏輯 ---
+    // --- 積木風格房型新增功能 ---
     function addRoomSelection() {
         const container = document.getElementById('roomSelectionContainer');
         const index = container.children.length + 1;
         
+        // 輪流分配顏色：1->紅, 2->藍, 3->黃, 4->紅...
+        const colors = ['badge-red', 'badge-blue', 'badge-yellow'];
+        const colorClass = colors[(index - 1) % 3];
+
         const roomEntryDiv = document.createElement('div');
         roomEntryDiv.className = 'room-card';
 
         const roomOptions = Object.keys(roomData).map(roomName => 
-            `<option value="${roomName}">🎄 ${roomName} (${roomData[roomName].capacity}人)</option>`
+            `<option value="${roomName}">${roomName} (${roomData[roomName].capacity}人)</option>`
         ).join('');
         
         const roomSelectHtml = `
             <div class="room-card-header">
-                <span class="room-number-badge">🌟 Room Style #${index}</span>
+                <span class="room-number-badge ${colorClass}">Room Style #${index}</span>
             </div>
             
             <div class="room-card-row">
@@ -424,12 +434,12 @@
             </div>
             
             <div class="room-card-row">
-                <label>間數 (上限參考)</label>
+                <label>間數</label>
                 <input type="number" class="room-quantity-input" min="1" value="1" inputmode="numeric">
             </div>
 
-            <button type="button" class="btn btn-delete-card" onclick="removeRoomSelection(this)">
-                🔥 移除選項
+            <button type="button" class="btn-delete-card" onclick="removeRoomSelection(this)">
+                🗑️ 加入選項
             </button>
         `;
         roomEntryDiv.innerHTML = roomSelectHtml;
@@ -443,12 +453,15 @@
 
     function updateRoomBadges() {
         const badges = document.querySelectorAll('.room-number-badge');
+        const colors = ['badge-red', 'badge-blue', 'badge-yellow'];
         badges.forEach((badge, index) => {
-            badge.innerText = `🌟 Room Style #${index + 1}`;
+            badge.innerText = `Room Style #${index + 1}`;
+            // 移除舊顏色，加入新輪替顏色
+            badge.classList.remove('badge-red', 'badge-blue', 'badge-yellow');
+            badge.classList.add(colors[index % 3]);
         });
     }
 
-    // --- 核心報價計算邏輯 (您的原始邏輯，確保功能正常) ---
     function calculateQuote() {
         const dateInput = document.getElementById('date').value;
         const roomEntries = document.querySelectorAll('.room-card');
@@ -462,7 +475,7 @@
              alert(`報價有效期限僅限 ${config.minDate} 至 ${config.maxDate}。`);
              return;
         }
-        if (roomEntries.length === 0) { alert("請至少新增一個房型。"); return; }
+        if (roomEntries.length === 0) { alert("請至少新增一個房型積木。"); return; }
 
         const dateType = getDateType(dateInput);
         let requestedQuantities = {};
@@ -492,6 +505,7 @@
         let totalRoomPriceAfterDiscount = 0;
         let totalDinnerGuests = 0;
         let totalDinnerCost = 0;
+        let totalAllDiscount = 0;
         
         if (dateType === "exception") {
             resultText = `*** 報價無法產生 ***\n\n所選日期為特殊除外日，不適用此報價表。`;
@@ -502,8 +516,7 @@
             else if (dateType === "holiday") { dateTypeName = "假日(週六)"; } 
             else { dateTypeName = "連續假日"; }
 
-            // 報價單標題使用聖誕主題
-            resultText = `【🎁 THE GAYA HOTEL 上半年度同業報價單 🎄】\n-------------------------\n`;
+            resultText = `【THE GAYA HOTEL 報價單】\n-------------------------\n`;
             resultText += `日期: ${dateInput} (${dateTypeName})\n-------------------------\n`;
 
             roomEntries.forEach((entry, index) => {
@@ -521,7 +534,7 @@
                 }
                 if (includeDinner) {
                     roomDiscountTotal += config.dinnerDiscountPerRoom;
-                    roomDiscountDetails.push(`加購晚餐優惠 -$${config.dinnerDiscountPerRoom}`);
+                    roomDiscountDetails.push(`晚餐優惠 -$${config.dinnerDiscountPerRoom}`);
                 }
 
                 let unitPriceAfterDiscount = roomBasePrice - roomDiscountTotal;
@@ -533,16 +546,17 @@
                 
                 totalRoomPriceAfterDiscount += roomPriceTotal;
                 totalDinnerGuests += roomDinnerGuestTotal;
+                totalAllDiscount += roomDiscountTotal * quantity;
                 totalDinnerCost += roomDinnerCostTotal;
 
-                resultText += `[🎁 房型${index + 1}] ${roomType}\n`;
+                resultText += `[房型${index + 1}] ${roomType}\n`;
                 resultText += `  數量: ${quantity}間 (${roomDinnerCapacity}人/間)\n`;
                 resultText += `  單價: $${roomBasePrice.toLocaleString()}\n`;
                 if (roomDiscountDetails.length > 0) {
                     resultText += `  折扣: ${roomDiscountDetails.join(', ')}\n`;
                 }
                 if (includeDinner) {
-                    resultText += `  晚餐: +$${roomDinnerCostTotal.toLocaleString()} (${roomDinnerGuestTotal}人 @$${dinnerType})\n`;
+                    resultText += `  晚餐: +$${roomDinnerCostTotal.toLocaleString()} (${roomDinnerGuestTotal}人)\n`;
                 }
                 const subTotal = roomPriceTotal + (includeDinner ? roomDinnerCostTotal : 0);
                 resultText += `  小計: $${subTotal.toLocaleString()}\n\n`;
@@ -551,18 +565,17 @@
             let finalTotalPrice = totalRoomPriceAfterDiscount + (includeDinner ? totalDinnerCost : 0);
 
             resultText += `-------------------------\n`;
-            resultText += `總房價 (折扣後): $${totalRoomPriceAfterDiscount.toLocaleString()}\n`;
+            resultText += `總房價: $${totalRoomPriceAfterDiscount.toLocaleString()}\n`;
             if (includeDinner) {
-                resultText += `總餐費: $${totalDinnerCost.toLocaleString()} (${totalDinnerGuests}位)\n`;
+                resultText += `總餐費: $${totalDinnerCost.toLocaleString()}\n`;
             }
-            resultText += `\n**總金額: NT$${finalTotalPrice.toLocaleString()}** 🎅\n`;
+            resultText += `\n**總金額: NT$${finalTotalPrice.toLocaleString()}**\n`;
             resultText += `-------------------------\n`;
-            resultText += `含稅及服務費。願您有個美好的聖誕假期!`;
+            resultText += `含稅及服務費。有效期至 2026/06/30。`;
         }
 
         outputArea.value = resultText;
         copyBtnContainer.classList.remove('hidden');
-        
         outputArea.scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -570,15 +583,18 @@
         const outputArea = document.getElementById('outputArea');
         const copyBtn = document.getElementById('copyBtn');
         outputArea.select();
-        outputArea.setSelectionRange(0, 99999);
+        outputArea.setSelectionRange(0, 99999); 
 
         navigator.clipboard.writeText(outputArea.value).then(() => {
             const originalText = copyBtn.innerText;
-            copyBtn.innerText = "🔔 聖誕快樂！複製成功！";
-            copyBtn.classList.add('success');
+            const originalClass = copyBtn.className;
+            
+            copyBtn.innerText = "✅ 複製成功";
+            copyBtn.className = "btn btn-green"; // 變身綠色積木
+            
             setTimeout(() => {
                 copyBtn.innerText = originalText;
-                copyBtn.classList.remove('success');
+                copyBtn.className = originalClass;
             }, 2000);
         }).catch(err => {
             alert("複製失敗，請手動選取文字複製。");
