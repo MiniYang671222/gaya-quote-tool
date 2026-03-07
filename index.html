@@ -3,608 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE GAYA HOTEL 2026上半年 自動報價小工具 (積木版)</title>
+    <title>THE GAYA HOTEL 2026 專業報價工具 V3</title>
     <style>
-        /* --- 變數定義 (積木配色) --- */
         :root {
-            --block-red: #FF1744;
-            --block-red-dark: #D50000;
-            --block-blue: #2979FF;
-            --block-blue-dark: #2962FF;
-            --block-yellow: #FFC400;
-            --block-yellow-dark: #FFAB00;
-            
-            --bg-color: #f4f5f7;
-            --card-bg: #ffffff;
+            --block-red: #FF1744; --block-red-dark: #D50000;
+            --block-blue: #2979FF; --block-blue-dark: #2962FF;
+            --block-yellow: #FFC400; --block-yellow-dark: #FFAB00;
+            --bg-color: #f4f5f7; --card-bg: #ffffff;
             --text-primary: #333333;
-            --text-secondary: #666666;
-            --border-color: #e0e0e0;
         }
 
-        /* --- 基礎設定 & 積木背景 --- */
         body {
-            font-family: 'Varela Round', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: var(--text-primary);
-            margin: 0;
-            padding: 20px 10px;
-            min-height: 100vh;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            /* 積木風格背景圖案 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            color: var(--text-primary); margin: 0; padding: 20px 10px; min-height: 100vh;
             background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(var(--block-blue) 15%, transparent 16%),
-                radial-gradient(var(--block-red) 15%, transparent 16%),
-                radial-gradient(var(--block-yellow) 15%, transparent 16%);
-            background-size: 60px 60px;
-            background-position: 0 0, 30px 30px, 15px 15px; /* 錯位排列 */
+            background-image: radial-gradient(var(--block-blue) 15%, transparent 16%), radial-gradient(var(--block-yellow) 15%, transparent 16%);
+            background-size: 60px 60px; background-position: 0 0, 30px 30px;
+            display: flex; justify-content: center;
         }
 
         .container {
-            background-color: var(--card-bg);
-            padding: 25px 20px;
-            border-radius: 20px;
-            /* 像是浮在積木上的厚卡片 */
+            background-color: var(--card-bg); padding: 25px 20px; border-radius: 20px;
             box-shadow: 0 10px 0 rgba(0,0,0,0.1), 0 20px 40px rgba(0,0,0,0.15);
-            border: 4px solid #fff;
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 50px;
-            position: relative;
+            border: 4px solid #fff; width: 100%; max-width: 600px; position: relative;
         }
 
-        h2 {
-            text-align: center;
-            margin: 10px 0 30px 0;
-            color: var(--text-primary);
-            font-weight: 900;
-            font-size: 1.8rem;
-            line-height: 1.4;
-            letter-spacing: 1px;
-        }
-
+        h2 { text-align: center; margin: 10px 0 25px 0; font-weight: 900; line-height: 1.2;}
         .title-accent {
-            display: inline-block;
-            background-color: var(--block-blue);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 10px;
-            transform: rotate(-2deg);
-            margin-top: 5px;
-            font-size: 1.2rem;
-            box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+            display: inline-block; background-color: var(--block-blue); color: white;
+            padding: 5px 15px; border-radius: 10px; transform: rotate(-1deg); font-size: 1.2rem;
         }
 
-        /* --- 表單元件 --- */
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            font-weight: 700;
+        label { display: block; margin-bottom: 5px; font-weight: 700; font-size: 0.9rem; color: #555; }
+        input[type="date"], input[type="number"], select, textarea {
+            width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #eee;
+            box-sizing: border-box; font-size: 16px; font-weight: 600; background: #fafafa;
         }
 
-        input[type="date"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: 3px solid #eee; /* 粗框 */
-            background-color: #fafafa;
-            color: var(--text-primary);
-            box-sizing: border-box;
-            font-size: 16px;
-            transition: all 0.2s;
-            appearance: none;
-            -webkit-appearance: none;
-            font-weight: 600;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--block-blue);
-            background-color: #fff;
-        }
-
-        .form-group { margin-bottom: 25px; }
-        .note { font-size: 0.85rem; color: #888; margin-top: 8px; font-weight: 500;}
-
-        /* --- 積木按鈕通用樣式 --- */
-        .btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 900; /* 加粗字體 */
-            cursor: pointer;
-            transition: all 0.1s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-transform: uppercase;
-            position: relative;
-            top: 0;
-        }
-
-        /* 按下按鈕的積木壓縮效果 */
-        .btn:active {
-            top: 4px;
-            box-shadow: 0 0 0 rgba(0,0,0,0) !important;
-        }
-
-        /* 藍色積木按鈕 (新增) */
-        .btn-blue {
-            background-color: var(--block-blue);
-            color: white;
-            box-shadow: 0 5px 0 var(--block-blue-dark);
-        }
-
-        /* 黃色積木按鈕 (計算 - 最顯眼) */
-        .btn-yellow {
-            background-color: var(--block-yellow);
-            color: #4a3b00; /* 深色字對比高 */
-            box-shadow: 0 5px 0 var(--block-yellow-dark);
-            position: sticky;
-            bottom: 20px;
-            z-index: 100;
-        }
-
-        /* 紅色積木按鈕 (刪除/操作) */
-        .btn-red {
-            background-color: var(--block-red);
-            color: white;
-            box-shadow: 0 5px 0 var(--block-red-dark);
-        }
-        
-        /* 綠色積木按鈕 (複製成功) */
-        .btn-green {
-            background-color: #00C853;
-            color: white;
-            box-shadow: 0 5px 0 #009624;
-        }
-
-        /* --- 房型卡片 (Card Style) --- */
-        #roomSelectionContainer {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
+        .form-group { margin-bottom: 20px; }
         .room-card {
-            background-color: #fff;
-            border: 3px solid #eee;
-            border-radius: 16px;
-            padding: 16px;
-            position: relative;
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 彈跳動畫 */
+            background-color: #fff; border: 3px solid #eee; border-radius: 16px;
+            padding: 16px; margin-bottom: 15px; position: relative; transition: 0.3s;
         }
+        .room-card:hover { border-color: var(--block-blue); }
 
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .room-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        /* 房號標籤 (動態顏色) */
         .room-number-badge {
-            color: white;
-            font-size: 0.9rem;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: 800;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-            display: inline-block;
-            transform: rotate(-2deg);
-        }
-        
-        .badge-red { background-color: var(--block-red); }
-        .badge-blue { background-color: var(--block-blue); }
-        .badge-yellow { background-color: var(--block-yellow); color: #4a3b00; }
-
-        .room-card-row { margin-bottom: 15px; }
-
-        /* 卡片內的刪除按鈕 */
-        .btn-delete-card {
-            width: 100%;
-            padding: 10px;
-            background-color: white;
-            color: var(--block-red);
-            border: 2px solid var(--block-red);
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            box-shadow: 0 3px 0 rgba(255, 23, 68, 0.2);
-            transition: all 0.1s;
-            cursor: pointer;
-        }
-        .btn-delete-card:active {
-            transform: translateY(2px);
-            box-shadow: none;
-            background-color: #fff0f0;
+            color: white; font-size: 0.8rem; padding: 4px 10px; border-radius: 6px;
+            font-weight: 800; display: inline-block; margin-bottom: 12px; background-color: var(--block-blue);
         }
 
-        /* --- 開關 (Switch) 設計成滑塊積木 --- */
-        .checkbox-wrapper {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            border: 2px solid #eee;
+        .btn {
+            width: 100%; padding: 16px; border: none; border-radius: 12px;
+            font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: all 0.1s;
+        }
+        .btn-blue { background-color: var(--block-blue); color: white; box-shadow: 0 5px 0 var(--block-blue-dark); margin-bottom: 10px; }
+        .btn-yellow { background-color: var(--block-yellow); color: #4a3b00; box-shadow: 0 5px 0 var(--block-yellow-dark); margin-top: 10px;}
+        .btn-red { background-color: var(--block-red); color: white; box-shadow: 0 5px 0 var(--block-red-dark); }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+
+        .btn-delete {
+            background: #fff; border: 1px solid var(--block-red); color: var(--block-red);
+            padding: 4px 8px; border-radius: 5px; cursor: pointer; float: right; font-weight: bold;
         }
 
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 56px;
-            height: 30px;
-        }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 24px;
-            width: 24px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        input:checked + .slider {
-            background-color: var(--block-red); /* 開啟變成紅色積木 */
-        }
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
-        #dinnerOptions {
-            background-color: #fff3e0; /* 淡淡的橘黃色背景 */
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 10px;
-            border: 2px dashed var(--block-yellow-dark);
-            display: none;
-        }
-
-        /* --- 輸出結果區 --- */
         #outputArea {
-            height: 300px;
-            font-family: 'Courier New', monospace; /* 打字機風格 */
-            line-height: 1.5;
-            white-space: pre-wrap;
-            background-color: #333; /* 這裡保持深色讓文字對比清晰 */
-            color: #f0f0f0;
-            border: 4px solid #333;
+            height: 280px; margin-top: 15px; background-color: #2c3e50; color: #ecf0f1;
+            font-family: 'Courier New', monospace; padding: 15px; border-radius: 10px; border: none;
+            font-size: 14px; line-height: 1.6;
         }
-
         .hidden { display: none; }
-
+        .dinner-box { background: #fff9e6; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px dashed var(--block-yellow); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>THE GAYA HOTEL<br>
-        <span class="title-accent">2026上半年 自動報價</span>
-    </h2>
+    <h2>THE GAYA HOTEL<br><span class="title-accent">2026 全年度報價系統</span></h2>
     
     <div class="form-group">
-        <label for="date">📅 選擇入住日期</label>
-        <input type="date" id="date" min="2026-01-01" max="2026-06-30" value="2026-01-01">
-        <div class="note">適用日期: 2026/01/01 - 06/30</div>
+        <label>📅 預計入住日期</label>
+        <input type="date" id="date" min="2026-01-01" max="2026-12-31" value="2026-01-01">
     </div>
 
     <div class="form-group">
-        <label>🏨 房型選擇</label>
-        <div id="roomSelectionContainer">
-            </div>
-        <button class="btn btn-blue" style="margin-top: 20px;" onclick="addRoomSelection()">
-            ✚ 加入其他房型
-        </button>
+        <label>🏨 房型與餐飲設定</label>
+        <div id="roomSelectionContainer"></div>
+        <button class="btn btn-blue" onclick="addRoomSelection()">✚ 增加房型項目</button>
     </div>
 
-    <div class="form-group">
-        <div class="checkbox-wrapper">
-            <span style="font-weight: bold; font-size: 1rem; color: var(--block-red);">🍽️ 加購晚餐</span>
-            <label class="switch">
-                <input type="checkbox" id="includeDinner" onchange="toggleDinnerOptions()">
-                <span class="slider"></span>
-            </label>
-        </div>
-        
-        <div id="dinnerOptions">
-            <label for="dinnerType">選擇方案 (每房再折 $300):</label>
-            <select id="dinnerType">
-                <option value="800">$800 /人 (精緻中式桌菜)</option>
-                <option value="1000">$1000 /人 (精緻中式桌菜)</option>
-            </select>
-            <div class="note">* 人數依房型標準入住人數計算</div>
-        </div>
-    </div>
+    <button class="btn btn-yellow" onclick="calculateQuote()">🧱 生成即時報價單 🧱</button>
 
-    <button class="btn btn-yellow" onclick="calculateQuote()">
-        🧱 開始計算總報價 🧱
-    </button>
-
-    <div class="form-group" style="margin-top: 30px;">
-        <label for="outputArea">📊 報價結果</label>
-        <textarea id="outputArea" readonly placeholder="請點選計算總報價..."></textarea>
-        
-        <div id="copyBtnContainer" class="hidden" style="margin-top: 15px;">
-            <button class="btn btn-red" id="copyBtn" onclick="copyToClipboard()">
-                📋 一鍵複製文字
-            </button>
-        </div>
+    <div class="form-group" style="margin-top: 20px;">
+        <textarea id="outputArea" readonly placeholder="點擊上方按鈕生成報價..."></textarea>
+        <button class="btn btn-red hidden" id="copyBtn" onclick="copyToClipboard()" style="margin-top:10px">📋 複製報價內容</button>
     </div>
 </div>
 
 <script>
-    // --- 資料定義 ---
     const roomData = {
-        "雅緻客房(一大床)": { capacity: 2, limit: 40, weekday: 4100, holiday: 5400, continuous: 6200 },
-        "雅緻客房(二小床)": { capacity: 2, limit: 40, weekday: 4100, holiday: 5400, continuous: 6200 },
-        "雅致三小床": { capacity: 3, limit: 8, weekday: 5300, holiday: 6600, continuous: 7400 },
-        "精彩家庭房": { capacity: 4, limit: 26, weekday: 5900, holiday: 7200, continuous: 8000 },
-        "豪華家庭房": { capacity: 4, limit: 6, weekday: 6900, holiday: 8200, continuous: 9000 },
-        "景觀豪華家庭房": { capacity: 4, limit: 8, weekday: 7900, holiday: 9200, continuous: 10000 },
-        "行政套房": { capacity: 2, limit: 5, weekday: 14000, holiday: 16500, continuous: 18500 },
-        "人文套房": { capacity: 2, limit: 1, weekday: 16500, holiday: 18500, continuous: 20500 },
-        "人文大套房": { capacity: 2, limit: 1, weekday: 18500, holiday: 20500, continuous: 22500 }
+        "雅緻雙人房(一大床)": { weekday: 4100, peak: 4600, holiday: 5400, bigHoliday: 6200, limit: 48, cap: 2 },
+        "雅緻雙人房(二小床)": { weekday: 4100, peak: 4600, holiday: 5400, bigHoliday: 6200, limit: 41, cap: 2 },
+        "雅緻三人房(三小床)": { weekday: 5300, peak: 5800, holiday: 6300, bigHoliday: 7100, limit: 8, cap: 3 },
+        "精彩家庭房(二中床)": { weekday: 5900, peak: 6400, holiday: 7200, bigHoliday: 8000, limit: 26, cap: 4 },
+        "豪華家庭房(二大床)": { weekday: 6900, peak: 7400, holiday: 8200, bigHoliday: 9000, limit: 8, cap: 4 },
+        "景觀豪華家庭房": { weekday: 7900, peak: 8400, holiday: 9200, bigHoliday: 10000, limit: 8, cap: 4 }
     };
 
     const config = {
-        minDate: "2026-01-01",
-        maxDate: "2026-06-30",
-        cny: ["2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20"],
-        continuous: [
-            "2026-01-01", 
-            "2026-02-27", "2026-02-28", "2026-04-03", "2026-04-04", "2026-04-05", 
-            "2026-05-01", "2026-05-02", "2026-06-19", "2026-06-20"
-        ],
-        exceptions: ["2026-04-24", "2026-04-25"],
-        dinnerDiscountPerRoom: 300,
-        weekdayExtraDiscount: 200
+        inquiry: { start: "2026-02-14", end: "2026-02-22" },
+        specialBig: ["2026-10-24", "2026-10-25", "2026-12-31"],
+        longHolidays: [
+            "2026-01-01", "2026-01-02", "2026-02-27", "2026-04-02", "2026-04-03", 
+            "2026-04-04", "2026-05-01", "2026-05-02", "2026-06-19", "2026-06-20", 
+            "2026-09-25", "2026-09-26", "2026-10-09", "2026-10-10"
+        ]
     };
 
-    function getDateType(dateString) {
-        if (config.exceptions.includes(dateString) || config.cny.includes(dateString)) return "exception";
-        if (config.continuous.includes(dateString)) return "continuous";
-        const date = new Date(dateString);
-        const dayOfWeek = date.getDay();
-        if (dayOfWeek === 6) return "holiday";
-        if (dayOfWeek >= 1 && dayOfWeek <= 4) return "weekday_extra_discount";
+    function getDateType(dateStr) {
+        if (dateStr >= config.inquiry.start && dateStr <= config.inquiry.end) return "inquiry";
+        const date = new Date(dateStr);
+        const month = date.getMonth() + 1;
+        const day = date.getDay(); 
+        const isSummer = (month === 7 || month === 8);
+
+        if (config.specialBig.includes(dateStr) || config.longHolidays.includes(dateStr) || (isSummer && day === 6)) return "bigHoliday";
+        if (isSummer) return "peak";
+        if (day === 6) return "holiday";
         return "weekday";
     }
 
-    function toggleDinnerOptions() {
-        const isChecked = document.getElementById('includeDinner').checked;
-        document.getElementById('dinnerOptions').style.display = isChecked ? 'block' : 'none';
-    }
-
-    // --- 積木風格房型新增功能 ---
     function addRoomSelection() {
         const container = document.getElementById('roomSelectionContainer');
-        const index = container.children.length + 1;
-        
-        // 輪流分配顏色：1->紅, 2->藍, 3->黃, 4->紅...
-        const colors = ['badge-red', 'badge-blue', 'badge-yellow'];
-        const colorClass = colors[(index - 1) % 3];
-
-        const roomEntryDiv = document.createElement('div');
-        roomEntryDiv.className = 'room-card';
-
-        const roomOptions = Object.keys(roomData).map(roomName => 
-            `<option value="${roomName}">${roomName} (${roomData[roomName].capacity}人)</option>`
-        ).join('');
-        
-        const roomSelectHtml = `
-            <div class="room-card-header">
-                <span class="room-number-badge ${colorClass}">Room Style #${index}</span>
+        const div = document.createElement('div');
+        div.className = 'room-card';
+        const options = Object.keys(roomData).map(name => `<option value="${name}">${name}</option>`).join('');
+        div.innerHTML = `
+            <button class="btn-delete" onclick="this.parentElement.remove()">移除</button>
+            <span class="room-number-badge">房型項目</span>
+            <div style="margin-bottom:10px">
+                <label>選擇房型 (含早餐)</label>
+                <select class="r-type">${options}</select>
             </div>
-            
-            <div class="room-card-row">
-                <label>選擇房型</label>
-                <select class="room-type-select">
-                    ${roomOptions}
-                </select>
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1"><label>間數</label><input type="number" class="r-qty" value="1" min="1"></div>
+                <div style="flex:2">
+                    <label>🍴 加購晚餐方案</label>
+                    <select class="r-dinner">
+                        <option value="0">不加購 (純房含早)</option>
+                        <option value="800">加購晚餐 800/人</option>
+                        <option value="1000">加購晚餐 1000/人</option>
+                    </select>
+                </div>
             </div>
-            
-            <div class="room-card-row">
-                <label>間數</label>
-                <input type="number" class="room-quantity-input" min="1" value="1" inputmode="numeric">
-            </div>
-
-            <button type="button" class="btn-delete-card" onclick="removeRoomSelection(this)">
-                🗑️ 加入選項
-            </button>
         `;
-        roomEntryDiv.innerHTML = roomSelectHtml;
-        container.appendChild(roomEntryDiv);
-    }
-
-    function removeRoomSelection(button) {
-        button.closest('.room-card').remove();
-        updateRoomBadges();
-    }
-
-    function updateRoomBadges() {
-        const badges = document.querySelectorAll('.room-number-badge');
-        const colors = ['badge-red', 'badge-blue', 'badge-yellow'];
-        badges.forEach((badge, index) => {
-            badge.innerText = `Room Style #${index + 1}`;
-            // 移除舊顏色，加入新輪替顏色
-            badge.classList.remove('badge-red', 'badge-blue', 'badge-yellow');
-            badge.classList.add(colors[index % 3]);
-        });
+        container.appendChild(div);
     }
 
     function calculateQuote() {
-        const dateInput = document.getElementById('date').value;
-        const roomEntries = document.querySelectorAll('.room-card');
-        const includeDinner = document.getElementById('includeDinner').checked;
-        const dinnerType = includeDinner ? parseInt(document.getElementById('dinnerType').value) : 0;
-        const outputArea = document.getElementById('outputArea');
-        const copyBtnContainer = document.getElementById('copyBtnContainer');
+        const dateStr = document.getElementById('date').value;
+        const roomCards = document.querySelectorAll('.room-card');
+        const output = document.getElementById('outputArea');
+        if (!dateStr || roomCards.length === 0) { alert("請填寫日期並加入房型"); return; }
 
-        if (!dateInput) { alert("請選擇日期。"); return; }
-        if (dateInput < config.minDate || dateInput > config.maxDate) {
-             alert(`報價有效期限僅限 ${config.minDate} 至 ${config.maxDate}。`);
-             return;
-        }
-        if (roomEntries.length === 0) { alert("請至少新增一個房型積木。"); return; }
-
-        const dateType = getDateType(dateInput);
-        let requestedQuantities = {};
-
-        try {
-            roomEntries.forEach((entry, index) => {
-                const roomType = entry.querySelector('.room-type-select').value;
-                const quantity = parseInt(entry.querySelector('.room-quantity-input').value);
-
-                if (isNaN(quantity) || quantity < 1) {
-                    throw new Error(`第 ${index + 1} 個房型的間數無效。`);
-                }
-                requestedQuantities[roomType] = (requestedQuantities[roomType] || 0) + quantity;
-            });
-        } catch (e) {
-            alert(e.message); return;
+        const dateType = getDateType(dateStr);
+        if (dateType === "inquiry") {
+            output.value = `【THE GAYA HOTEL 報價通知】\n日期：${dateStr}\n------------------------------\n此區間為農曆春節特殊日，\n不適用自動報價，請洽業務部另外詢價。\n\n以上為參考報價，可依實際預算與業務聯繫協商報價。`;
+            document.getElementById('copyBtn').classList.remove('hidden');
+            return;
         }
 
-        for (const type in requestedQuantities) {
-            if (requestedQuantities[type] > roomData[type].limit) {
-                alert(`${type} 要求的總間數 (${requestedQuantities[type]} 間) 已超過飯店上限 (${roomData[type].limit} 間)。`);
+        let isHolidayType = (dateType === "holiday" || dateType === "bigHoliday");
+        let roomDiscount = isHolidayType ? 200 : 300;
+        let aggregateQty = {};
+        let items = [];
+
+        roomCards.forEach(card => {
+            const type = card.querySelector('.r-type').value;
+            const qty = parseInt(card.querySelector('.r-qty').value) || 0;
+            const dinnerPrice = parseInt(card.querySelector('.r-dinner').value);
+            aggregateQty[type] = (aggregateQty[type] || 0) + qty;
+            items.push({ type, qty, dinnerPrice });
+        });
+
+        for (let type in aggregateQty) {
+            if (aggregateQty[type] > roomData[type].limit) {
+                alert(`警告：${type} 需求 ${aggregateQty[type]} 間已超過飯店上限 ${roomData[type].limit} 間！`);
                 return;
             }
         }
-        
-        let resultText = "";
-        let totalRoomPriceAfterDiscount = 0;
-        let totalDinnerGuests = 0;
-        let totalDinnerCost = 0;
-        let totalAllDiscount = 0;
-        
-        if (dateType === "exception") {
-            resultText = `*** 報價無法產生 ***\n\n所選日期為特殊除外日，不適用此報價表。`;
-        } else {
-            let dateTypeName;
-            if (dateType === "weekday_extra_discount") { dateTypeName = "平日(週一至週四)"; } 
-            else if (dateType === "weekday") { dateTypeName = "平日(週日/週五)"; } 
-            else if (dateType === "holiday") { dateTypeName = "假日(週六)"; } 
-            else { dateTypeName = "連續假日"; }
 
-            resultText = `【THE GAYA HOTEL 報價單】\n-------------------------\n`;
-            resultText += `日期: ${dateInput} (${dateTypeName})\n-------------------------\n`;
+        let typeLabel = { weekday:"平日", peak:"旺日(暑假)", holiday:"假日", bigHoliday:"大假日" }[dateType];
+        let text = `【THE GAYA HOTEL 報價單】\n入住日期：${dateStr} (${typeLabel})\n------------------------------\n`;
+        let totalAll = 0;
 
-            roomEntries.forEach((entry, index) => {
-                const roomType = entry.querySelector('.room-type-select').value;
-                const quantity = parseInt(entry.querySelector('.room-quantity-input').value);
-                const roomDataEntry = roomData[roomType];
+        items.forEach((item, idx) => {
+            const basePrice = roomData[item.type][dateType];
+            const cap = roomData[item.type].cap;
+            let currentRoomPrice = basePrice;
+            let dinnerInfo = "";
 
-                let roomBasePrice = roomDataEntry[dateType.startsWith('weekday') ? 'weekday' : dateType]; 
-                let roomDiscountTotal = 0;
-                let roomDiscountDetails = [];
-
-                if (dateType === "weekday_extra_discount") {
-                    roomDiscountTotal += config.weekdayExtraDiscount;
-                    roomDiscountDetails.push(`周一~四優惠 -$${config.weekdayExtraDiscount}`);
-                }
-                if (includeDinner) {
-                    roomDiscountTotal += config.dinnerDiscountPerRoom;
-                    roomDiscountDetails.push(`晚餐優惠 -$${config.dinnerDiscountPerRoom}`);
-                }
-
-                let unitPriceAfterDiscount = roomBasePrice - roomDiscountTotal;
-                let roomPriceTotal = unitPriceAfterDiscount * quantity;
-
-                let roomDinnerCapacity = roomDataEntry.capacity;
-                let roomDinnerGuestTotal = roomDinnerCapacity * quantity;
-                let roomDinnerCostTotal = (dinnerType * roomDinnerGuestTotal);
-                
-                totalRoomPriceAfterDiscount += roomPriceTotal;
-                totalDinnerGuests += roomDinnerGuestTotal;
-                totalAllDiscount += roomDiscountTotal * quantity;
-                totalDinnerCost += roomDinnerCostTotal;
-
-                resultText += `[房型${index + 1}] ${roomType}\n`;
-                resultText += `  數量: ${quantity}間 (${roomDinnerCapacity}人/間)\n`;
-                resultText += `  單價: $${roomBasePrice.toLocaleString()}\n`;
-                if (roomDiscountDetails.length > 0) {
-                    resultText += `  折扣: ${roomDiscountDetails.join(', ')}\n`;
-                }
-                if (includeDinner) {
-                    resultText += `  晚餐: +$${roomDinnerCostTotal.toLocaleString()} (${roomDinnerGuestTotal}人)\n`;
-                }
-                const subTotal = roomPriceTotal + (includeDinner ? roomDinnerCostTotal : 0);
-                resultText += `  小計: $${subTotal.toLocaleString()}\n\n`;
-            });
-
-            let finalTotalPrice = totalRoomPriceAfterDiscount + (includeDinner ? totalDinnerCost : 0);
-
-            resultText += `-------------------------\n`;
-            resultText += `總房價: $${totalRoomPriceAfterDiscount.toLocaleString()}\n`;
-            if (includeDinner) {
-                resultText += `總餐費: $${totalDinnerCost.toLocaleString()}\n`;
+            if (item.dinnerPrice > 0) {
+                currentRoomPrice = basePrice - roomDiscount;
+                const dinnerSub = item.dinnerPrice * cap * item.qty;
+                const roomSub = currentRoomPrice * item.qty;
+                totalAll += (roomSub + dinnerSub);
+                dinnerInfo = `   + 晚餐 $${item.dinnerPrice}/人 (每房減免$${roomDiscount})\n   小計：$${(roomSub+dinnerSub).toLocaleString()}\n`;
+            } else {
+                const roomSub = basePrice * item.qty;
+                totalAll += roomSub;
+                dinnerInfo = `   小計：$${roomSub.toLocaleString()}\n`;
             }
-            resultText += `\n**總金額: NT$${finalTotalPrice.toLocaleString()}**\n`;
-            resultText += `-------------------------\n`;
-            resultText += `含稅及服務費。有效期至 2026/06/30。`;
-        }
 
-        outputArea.value = resultText;
-        copyBtnContainer.classList.remove('hidden');
-        outputArea.scrollIntoView({ behavior: 'smooth' });
+            text += `${idx+1}. ${item.type} x ${item.qty}間\n`;
+            text += `   房價：$${currentRoomPrice.toLocaleString()}/間\n${dinnerInfo}`;
+        });
+
+        text += `------------------------------\n總計預估金額：NT$ ${totalAll.toLocaleString()}\n(含稅及服務費)\n報價有效期至 2026/12/31止。\n\n以上為參考報價，可依實際預算與業務聯繫協商報價。`;
+        output.value = text;
+        document.getElementById('copyBtn').classList.remove('hidden');
+        output.scrollTop = 0;
     }
 
     function copyToClipboard() {
-        const outputArea = document.getElementById('outputArea');
-        const copyBtn = document.getElementById('copyBtn');
-        outputArea.select();
-        outputArea.setSelectionRange(0, 99999); 
-
-        navigator.clipboard.writeText(outputArea.value).then(() => {
-            const originalText = copyBtn.innerText;
-            const originalClass = copyBtn.className;
-            
-            copyBtn.innerText = "✅ 複製成功";
-            copyBtn.className = "btn btn-green"; // 變身綠色積木
-            
-            setTimeout(() => {
-                copyBtn.innerText = originalText;
-                copyBtn.className = originalClass;
-            }, 2000);
-        }).catch(err => {
-            alert("複製失敗，請手動選取文字複製。");
-        });
+        const area = document.getElementById('outputArea');
+        area.select();
+        document.execCommand('copy');
+        alert("報價單已成功複製！");
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        toggleDinnerOptions();
-        addRoomSelection();
-    });
+    window.onload = addRoomSelection;
 </script>
 
 </body>
