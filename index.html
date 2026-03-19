@@ -110,12 +110,12 @@
 
     const config = {
         inquiry: { start: "2026-02-14", end: "2026-02-22" },
-        ironman: ["2026-04-24", "2026-04-25"], // 鐵人三項期間
+        ironman: ["2026-04-24", "2026-04-25"], 
         specialBig: ["2026-10-24", "2026-10-25", "2026-12-31"],
         longHolidays: [
             "2026-01-01", "2026-01-02", "2026-02-27", "2026-04-02", "2026-04-03", 
             "2026-04-04", "2026-05-01", "2026-05-02", "2026-06-19", "2026-06-20", 
-            "2026-09-25", "2026-09-26", "2026-10-09", "2026-10-10"
+            "2026-09-25", "2026-09-26", "2026-09-27", "2026-10-09", "2026-10-10"
         ]
     };
 
@@ -127,6 +127,7 @@
         const day = date.getDay(); 
         const isSummer = (month === 7 || month === 8);
 
+        // 判斷是否為大假日：包含手動指定的連假、特殊日，以及暑假的週六
         if (config.specialBig.includes(dateStr) || config.longHolidays.includes(dateStr) || (isSummer && day === 6)) return "bigHoliday";
         if (isSummer) return "peak";
         if (day === 6) return "holiday";
@@ -168,7 +169,6 @@
 
         const dateType = getDateType(dateStr);
         
-        // 特殊日邏輯
         if (dateType === "inquiry" || dateType === "ironman") {
             let reason = dateType === "inquiry" ? "農曆春節特殊日" : "國際鐵人三項期間";
             output.value = `【THE GAYA HOTEL 報價通知】\n日期：${dateStr}\n------------------------------\n此區間為 ${reason}，\n特殊報價請洽詢業務。\n\n以上為參考報價，可依實際預算與業務聯繫協商報價。`;
@@ -240,7 +240,3 @@
 
 </body>
 </html>
-</body>
-</html>
-
-
