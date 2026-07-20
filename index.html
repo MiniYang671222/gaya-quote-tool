@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE GAYA HOTEL 2026 專業報價工具 V4</title>
+    <title>THE GAYA HOTEL 專業報價工具</title>
     <style>
         :root {
             --block-red: #FF1744; --block-red-dark: #D50000;
@@ -77,11 +77,11 @@
 <body>
 
 <div class="container">
-    <h2>THE GAYA HOTEL<br><span class="title-accent">2026 全年度報價系統</span></h2>
+    <h2>THE GAYA HOTEL<br><span class="title-accent">專業報價系統</span></h2>
     
     <div class="form-group">
-        <label>📅 預計入住日期</label>
-        <input type="date" id="date" min="2026-01-01" max="2026-12-31" value="2026-01-01">
+        <label>📅 預計入住日期 (可查詢區間：2026/07/01 - 2027/06/30)</label>
+        <input type="date" id="date" min="2026-07-01" max="2027-06-30" value="2026-07-01">
     </div>
 
     <div class="form-group">
@@ -108,46 +108,57 @@
         "景觀豪華家庭房": { weekday: 7900, peak: 8400, holiday: 9200, bigHoliday: 10000, limit: 8, cap: 4 }
     };
 
-    const config = {
-        inquiry: { start: "2026-02-14", end: "2026-02-22" },
-        ironman: ["2026-04-24", "2026-04-25"], 
+    // 2026 年專屬設定（下半年）
+    const config2026 = {
+        exclude: ["2026-09-13", "2026-09-14"], // 排除常規報價的特殊日期
         specialBig: ["2026-10-24", "2026-10-25", "2026-12-31"],
-        // 確保 09-25, 09-26, 09-27 都在這裡
         longHolidays: [
-            "2026-01-01", "2026-01-02", "2026-02-27", "2026-04-02", "2026-04-03", 
-            "2026-04-04", "2026-05-01", "2026-05-02", "2026-06-19", "2026-06-20", 
             "2026-09-25", "2026-09-26", "2026-09-27", "2026-10-09", "2026-10-10"
         ]
     };
 
+    // 2027 年專屬設定（上半年）
+    const config2027 = {
+        cny: { start: "2027-02-04", end: "2027-02-10" },
+        ironman: ["2027-04-23", "2027-04-24"], 
+        longHolidays: [
+            "2027-01-01", "2027-01-02", 
+            "2027-02-27", "2027-02-28", 
+            "2027-04-03", "2027-04-04", "2027-04-05", 
+            "2027-04-30", "2027-05-01"
+        ],
+        specialHolidays: ["2027-06-09"]
+    };
+
     function getDateType(dateStr) {
-        // 1. 優先判定：手動指定的特殊大假日 (包含 9/25-27)
-        if (config.specialBig.includes(dateStr) || config.longHolidays.includes(dateStr)) {
-            return "bigHoliday";
-        }
-
-        // 2. 判定：春節或鐵人三項 (顯示特殊報價提示)
-        if (dateStr >= config.inquiry.start && dateStr <= config.inquiry.end) return "inquiry";
-        if (config.ironman.includes(dateStr)) return "ironman";
-
         const date = new Date(dateStr);
+        const year = date.getFullYear();
         const month = date.getMonth() + 1;
-        const day = date.getDay(); 
-        const isSummer = (month === 7 || month === 8);
+        const day = date.getDay(); // 0 是週日，6 是週六
 
-        // 3. 判定：暑假
-        if (isSummer) {
-            return (day === 6) ? "bigHoliday" : "peak";
+        if (year === 2027) {
+            // --- 2027 年判定邏輯 ---
+            if (dateStr >= config2027.cny.start && dateStr <= config2027.cny.end) return "cny";
+            if (config2027.ironman.includes(dateStr)) return "ironman";
+            if (config2027.longHolidays.includes(dateStr)) return "bigHoliday";
+            if (day === 6 || config2027.specialHolidays.includes(dateStr)) return "holiday";
+            return "weekday";
+        } else {
+            // --- 2026 年判定邏輯 ---
+            if (config2026.exclude.includes(dateStr)) return "exclude2026"; // 優先判定 2026 排除日
+            if (config2026.specialBig.includes(dateStr) || config2026.longHolidays.includes(dateStr)) {
+                return "bigHoliday";
+            }
+            const isSummer = (month === 7 || month === 8);
+            if (isSummer) {
+                return (day === 6) ? "bigHoliday" : "peak";
+            }
+            if (day === 6) return "holiday";
+            return "weekday";
         }
-
-        // 4. 判定：一般週六
-        if (day === 6) return "holiday";
-
-        // 5. 其他皆為平日
-        return "weekday";
     }
 
-    // --- 以下為原本的計算與 UI 功能，保持不變 ---
+    // --- 以下為計算與 UI 功能 ---
 
     function addRoomSelection() {
         const container = document.getElementById('roomSelectionContainer');
@@ -184,9 +195,13 @@
 
         const dateType = getDateType(dateStr);
         
-        if (dateType === "inquiry" || dateType === "ironman") {
-            let reason = dateType === "inquiry" ? "農曆春節特殊日" : "國際鐵人三項期間";
-            output.value = `【THE GAYA HOTEL 報價通知】\n日期：${dateStr}\n------------------------------\n此區間為 ${reason}，\n特殊報價請洽詢業務。\n\n以上為參考報價，可依實際預算與業務聯繫協商報價。`;
+        // 處理除外日與特殊日期提示
+        if (dateType === "cny" || dateType === "ironman" || dateType === "exclude2026") {
+            let reason = "特殊日";
+            if (dateType === "cny") reason = "農曆春節期間";
+            if (dateType === "ironman") reason = "國際鐵人三項期間";
+            
+            output.value = `【THE GAYA HOTEL 報價通知】\n日期：${dateStr}\n------------------------------\n此區間為 ${reason}，不適用此報價。\n特殊報價請洽詢業務。\n\n以上為參考報價，可依實際預算與業務聯繫協商報價。`;
             document.getElementById('copyBtn').classList.remove('hidden');
             return;
         }
@@ -211,7 +226,7 @@
             }
         }
 
-        let typeLabel = { weekday:"平日", peak:"旺日(暑假)", holiday:"假日", bigHoliday:"大假日" }[dateType];
+        let typeLabel = { weekday:"平日", peak:"旺日(暑假)", holiday:"假日", bigHoliday:"連續假日(大假日)" }[dateType];
         let text = `【THE GAYA HOTEL 報價單】\n入住日期：${dateStr} (${typeLabel})\n------------------------------\n`;
         let totalAll = 0;
 
@@ -237,7 +252,7 @@
             text += `   房價：$${currentRoomPrice.toLocaleString()}/間\n${dinnerInfo}`;
         });
 
-        text += `------------------------------\n總計預估金額：NT$ ${totalAll.toLocaleString()}\n(含稅及服務費)\n報價有效期至 2026/12/31止。\n\n以上為參考報價，可依實際預算與業務聯繫協商報價。`;
+        text += `------------------------------\n總計預估金額：NT$ ${totalAll.toLocaleString()}\n(含稅及服務費)\n\n以上為參考報價，可依實際預算與業務聯繫協商報價。`;
         output.value = text;
         document.getElementById('copyBtn').classList.remove('hidden');
         output.scrollTop = 0;
@@ -251,7 +266,6 @@
     }
 
     window.onload = addRoomSelection;
-</script>
 </script>
 
 </body>
