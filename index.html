@@ -67,7 +67,7 @@
         }
 
         #outputArea {
-            height: 280px; margin-top: 15px; background-color: #2c3e50; color: #ecf0f1;
+            height: 320px; margin-top: 15px; background-color: #2c3e50; color: #ecf0f1;
             font-family: 'Courier New', monospace; padding: 15px; border-radius: 10px; border: none;
             font-size: 14px; line-height: 1.6;
         }
@@ -101,7 +101,7 @@
 <script>
     const roomData = {
         "雅緻雙人房(一大床)": { weekday: 4100, peak: 4600, holiday: 5400, bigHoliday: 6200, limit: 48, cap: 2 },
-        "雅緻雙人房(二小床)": { weekday: 4100, peak: 4600, holiday: 5400, bigHoliday: 6200, limit: 41, cap: 2 },
+        "雅緻雙人房(二小床)": { weekday: 4300, peak: 4800, holiday: 5600, bigHoliday: 6400, limit: 41, cap: 2 },
         "雅緻三人房(三小床)": { weekday: 5300, peak: 5800, holiday: 6300, bigHoliday: 7100, limit: 8, cap: 3 },
         "精彩家庭房(二中床)": { weekday: 5900, peak: 6400, holiday: 7200, bigHoliday: 8000, limit: 26, cap: 4 },
         "豪華家庭房(二大床)": { weekday: 6900, peak: 7400, holiday: 8200, bigHoliday: 9000, limit: 8, cap: 4 },
@@ -194,14 +194,15 @@
         if (!dateStr || roomCards.length === 0) { alert("請填寫日期並加入房型"); return; }
 
         const dateType = getDateType(dateStr);
-        
+        const dynamicRuleText = "【客房配額與動態房價調節機制】\n1.基礎同業價為預設報價；當該房型空房率降至 50%(含)以下，將保留 15% 內之動態調價彈性。\n2.歡迎團體專案議價，最終確認價格以本公司業務團隊之最新書面回覆為準。";
+
         // 處理除外日與特殊日期提示
         if (dateType === "cny" || dateType === "ironman" || dateType === "exclude2026") {
             let reason = "特殊日";
             if (dateType === "cny") reason = "農曆春節期間";
             if (dateType === "ironman") reason = "國際鐵人三項期間";
             
-            output.value = `【THE GAYA HOTEL 報價通知】\n日期：${dateStr}\n------------------------------\n此區間為 ${reason}，不適用此報價。\n特殊報價請洽詢業務。\n\n以上為參考報價，可依實際預算與業務聯繫協商報價。`;
+            output.value = `【THE GAYA HOTEL 報價通知】\n日期：${dateStr}\n------------------------------\n此區間為 ${reason}，不適用此報價。\n特殊報價請洽詢業務。\n\n${dynamicRuleText}`;
             document.getElementById('copyBtn').classList.remove('hidden');
             return;
         }
@@ -252,7 +253,7 @@
             text += `   房價：$${currentRoomPrice.toLocaleString()}/間\n${dinnerInfo}`;
         });
 
-        text += `------------------------------\n總計預估金額：NT$ ${totalAll.toLocaleString()}\n(含稅及服務費)\n\n以上為參考報價，可依實際預算與業務聯繫協商報價。`;
+        text += `------------------------------\n總計預估金額：NT$ ${totalAll.toLocaleString()}\n(含稅及服務費)\n\n${dynamicRuleText}`;
         output.value = text;
         document.getElementById('copyBtn').classList.remove('hidden');
         output.scrollTop = 0;
