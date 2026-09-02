@@ -108,6 +108,20 @@
         "景觀豪華家庭房": { weekday: 7900, peak: 8400, holiday: 9200, bigHoliday: 10000, limit: 8, cap: 4 }
     };
 
+    // 2026 下半年價格覆寫（僅列出與 roomData 預設值不同的房型；roomData 本身視為 2027 上半年價格）
+    const priceOverrides2026 = {
+        "雅緻雙人房(二小床)": { weekday: 4100, peak: 4600, holiday: 5400, bigHoliday: 6200 }
+    };
+
+    // 依日期取得該房型在正確年份的房價
+    function getRoomPrice(type, dateStr, dateType) {
+        const year = dateStr.substring(0, 4);
+        if (year === "2026" && priceOverrides2026[type]) {
+            return priceOverrides2026[type][dateType];
+        }
+        return roomData[type][dateType];
+    }
+
     // 2026 年專屬設定（下半年）
     const config2026 = {
         exclude: ["2026-09-12", "2026-09-13"], // 排除常規報價的特殊日期
@@ -232,7 +246,7 @@
         let totalAll = 0;
 
         items.forEach((item, idx) => {
-            const basePrice = roomData[item.type][dateType];
+            const basePrice = getRoomPrice(item.type, dateStr, dateType);
             const cap = roomData[item.type].cap;
             let currentRoomPrice = basePrice;
             let dinnerInfo = "";
